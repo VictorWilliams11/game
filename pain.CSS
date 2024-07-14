@@ -15,7 +15,7 @@ body{
     border-radius: 15px;
     align-items: center;
     max-width: 500px;
-    margin-left: 600px;
+    margin-left: 400px;
     overflow: hidden;
 }
 #display{
@@ -72,13 +72,15 @@ h2{
     text-align: left;
     color: brown;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    padding-left: 600px;
+    padding-left: 400px;
 
 }
 .rrr{
     align-items: left;
     text-align: center;
-    font-size: 20px;
+    font-size: 30px;
+    margin-top: 3px;
+    margin-bottom: 3px;
     background-color: brown;
 }
 *{
@@ -107,3 +109,72 @@ button{
 button a{
     color: white;font-weight: bold;font-size:15px
 }
+ .bu1{
+         background-color: blue;
+         color: rgb(211, 24, 34);
+         width: 100px;
+         height: 100px;
+         font-size: large;
+         border-color: black;
+         border-width: 10px;
+         border-radius: 149px;
+         cursor: pointer;}
+      .bu2 {
+         background-color: blue;
+         color: rgb(211, 24, 34);
+         width: 100px;
+         height: 100px;
+         font-size: large;
+         border-color: black;
+         border-width: 10px;
+         border-radius: 149px;
+         cursor: pointer;}
+      .bu3 {
+         background-color: blue;
+         color: rgb(211, 24, 34);
+         width: 100px;
+         height: 100px;
+         font-size: large;
+         border-color: black;
+         border-width: 10px;
+         border-radius: 149px;
+         cursor: pointer;}
+         
+         
+      
+      div{
+         background-color: brown;
+         color: black;  
+         text-align: center;
+         border-radius: 100px;
+         cursor: pointer;
+
+      }
+    
+      
+      .body{
+         background-color: black;
+         
+         
+      }
+      .tt3,.tt2,.h1{
+         background-color: black;
+         color: blueviolet;
+         border-radius: 12px;
+         border-width: 10px;
+         cursor: pointer;
+         
+
+
+      }
+      .victor4 {
+         background-color: rgb(204, 223, 159);
+      }
+      .get{
+         color: rgb(206, 11, 21);
+         background-color: blue;
+         border-radius: 10px;
+         width: 400px;
+      }
+      
+      
