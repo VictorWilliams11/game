@@ -36,10 +36,14 @@ export default async function ExamPage({
         .eq("subject_id", subject.id)
         .order("created_at")
 
+      // Randomly shuffle and take up to 50 questions
+      const shuffled = questions?.sort(() => Math.random() - 0.5) || []
+      const selectedQuestions = shuffled.slice(0, 50)
+
       return {
         id: subject.id,
         name: subject.name,
-        questions: questions || [],
+        questions: selectedQuestions,
       }
     }),
   )

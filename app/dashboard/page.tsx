@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { BookOpen, FileQuestion, LogOut, User, Users } from "lucide-react"
+import { Leaderboard } from "@/components/leaderboard"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -98,6 +99,21 @@ export default async function DashboardPage() {
                   </Button>
                 </CardContent>
               </Card>
+
+              <Card className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BookOpen className="h-5 w-5 text-indigo-600" />
+                    Manage Study Notes
+                  </CardTitle>
+                  <CardDescription>Add and manage study materials for students</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button asChild variant="outline" className="w-full bg-transparent">
+                    <Link href="/admin-secure-portal/notes">Manage Notes</Link>
+                  </Button>
+                </CardContent>
+              </Card>
             </>
           ) : (
             <>
@@ -130,9 +146,31 @@ export default async function DashboardPage() {
                   </Button>
                 </CardContent>
               </Card>
+
+              <Card className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BookOpen className="h-5 w-5 text-indigo-600" />
+                    Study Notes
+                  </CardTitle>
+                  <CardDescription>Read notes and literature for your exams</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button asChild variant="outline" className="w-full bg-transparent">
+                    <Link href="/student/notes">View Study Materials</Link>
+                  </Button>
+                </CardContent>
+              </Card>
             </>
           )}
         </div>
+
+        {/* Leaderboard for students */}
+        {!isAdmin && (
+          <div className="mt-8">
+            <Leaderboard limit={10} />
+          </div>
+        )}
       </div>
     </div>
   )

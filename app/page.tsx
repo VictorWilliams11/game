@@ -1,10 +1,21 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { BookOpen, Brain, Trophy, Users, CheckCircle, Clock, BarChart } from "lucide-react"
+import { BookOpen, Brain, Trophy, Users, CheckCircle, Clock, BarChart, FileQuestion } from "lucide-react"
 import Link from "next/link"
+import { Leaderboard } from "@/components/leaderboard"
+import { createClient } from "@/lib/supabase/server"
 
-export default function HomePage() {
+export default async function HomePage() {
+  const supabase = await createClient()
+
+  const { count: questionsCount } = await supabase.from("questions").select("*", { count: "exact", head: true })
+  const { count: studentsCount } = await supabase
+    .from("profiles")
+    .select("*", { count: "exact", head: true })
+    .eq("role", "student")
+  const { count: examsCount } = await supabase.from("exam_sessions").select("*", { count: "exact", head: true })
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* Hero Section */}
@@ -16,6 +27,25 @@ export default function HomePage() {
             Master JAMB, WAEC, and NECO exams with CampusGist's comprehensive computer-based testing platform. Practice
             like the real exam!
           </p>
+
+          <div className="flex flex-wrap justify-center gap-6 mb-8">
+            <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md">
+              <FileQuestion className="h-5 w-5 text-blue-600" />
+              <span className="font-bold text-blue-900">{questionsCount || 1000}+</span>
+              <span className="text-muted-foreground">Questions</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md">
+              <Users className="h-5 w-5 text-purple-600" />
+              <span className="font-bold text-purple-900">{studentsCount || 500}+</span>
+              <span className="text-muted-foreground">Students</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md">
+              <Trophy className="h-5 w-5 text-green-600" />
+              <span className="font-bold text-green-900">{examsCount || 2000}+</span>
+              <span className="text-muted-foreground">Exams Taken</span>
+            </div>
+          </div>
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="text-lg">
               <Link href="/auth/sign-up">Start Practicing Free</Link>
@@ -75,6 +105,16 @@ export default function HomePage() {
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        <div className="mb-16 max-w-3xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-blue-900 mb-3">Top Performers This Month</h2>
+            <p className="text-muted-foreground">
+              See how you rank against other students. Practice more to climb the leaderboard!
+            </p>
+          </div>
+          <Leaderboard limit={5} />
         </div>
 
         <div className="mb-16 bg-white rounded-2xl p-8 shadow-lg">
