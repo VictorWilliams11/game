@@ -20,15 +20,33 @@ export default async function ExamPage({
   }
 
   const subjectIdArray = params.subjectIds.split(",")
+  const subjectNameArray = params.subjectNames?.split(",") || []
 
-  // Fetch questions for all selected subjects
-  const { data: questions } = await supabase
-    .from("questions")
-    .select("*")
-    .in("subject_id", subjectIdArray)
-    .order("created_at")
+  const { data: subjects } = await supabase.from("subjects").select("id, name").in("id", subjectIdArray)
 
-  if (!questions || questions.length === 0) {
+  if (!subjects || subjects.length === 0) {
+    redirect("/student/select-exam")
+  }
+
+  const subjectsWithQuestions = await Promise.all(
+    subjects.map(async (subject) => {
+      const { data: questions } = await supabase
+        .from("questions")
+        .select("*")
+        .eq("subject_id", subject.id)
+        .order("created_at")
+
+      return {
+        id: subject.id,
+        name: subject.name,
+        questions: questions || [],
+      }
+    }),
+  )
+
+  const totalQuestions = subjectsWithQuestions.reduce((sum, s) => sum + s.questions.length, 0)
+
+  if (totalQuestions === 0) {
     redirect("/student/select-exam")
   }
 
@@ -37,9 +55,9 @@ export default async function ExamPage({
     .insert({
       user_id: data.user.id,
       exam_type_id: params.examTypeId,
-      subject_id: subjectIdArray[0], // Store first subject for compatibility
+      subject_id: subjectIdArray[0],
       duration_minutes: 60,
-      total_questions: questions.length,
+      total_questions: totalQuestions,
     })
     .select()
     .single()
@@ -48,12 +66,5 @@ export default async function ExamPage({
     redirect("/student/select-exam")
   }
 
-  return (
-    <ExamInterface
-      questions={questions}
-      sessionId={session.id}
-      subjectName={params.subjectNames || ""}
-      userId={data.user.id}
-    />
-  )
+  return <ExamInterface subjectsWithQuestions={subjectsWithQuestions} sessionId={session.id} userId={data.user.id} />
 }
