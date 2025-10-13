@@ -22,6 +22,8 @@ export default async function SelectSubjectPage({
     redirect("/student/select-exam")
   }
 
+  const { data: examType } = await supabase.from("exam_types").select("*").eq("id", params.examTypeId).single()
+
   // Fetch subjects for the selected exam type
   const { data: subjects } = await supabase
     .from("subjects")
@@ -44,6 +46,8 @@ export default async function SelectSubjectPage({
     }),
   )
 
+  const maxSubjects = examType?.name === "JAMB" ? 4 : 9
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -55,13 +59,19 @@ export default async function SelectSubjectPage({
         </Button>
 
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-blue-900 mb-2">Select Subject</h1>
+          <h1 className="text-3xl font-bold text-blue-900 mb-2">Select Subjects</h1>
           <p className="text-muted-foreground">
-            Choose a subject for <span className="font-semibold">{params.examTypeName}</span>
+            Choose up to <span className="font-semibold">{maxSubjects} subjects</span> for{" "}
+            <span className="font-semibold">{params.examTypeName}</span>
           </p>
         </div>
 
-        <SubjectSelector subjects={subjectsWithCount} examTypeId={params.examTypeId} />
+        <SubjectSelector
+          subjects={subjectsWithCount}
+          examTypeId={params.examTypeId}
+          examTypeName={params.examTypeName || ""}
+          maxSubjects={maxSubjects}
+        />
       </div>
     </div>
   )

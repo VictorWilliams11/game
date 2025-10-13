@@ -28,10 +28,9 @@ type Subject = {
 type Props = {
   examTypes: ExamType[]
   subjects: Subject[]
-  userId: string
 }
 
-export function AddQuestionForm({ examTypes, subjects, userId }: Props) {
+export function AddQuestionForm({ examTypes, subjects }: Props) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -55,6 +54,8 @@ export function AddQuestionForm({ examTypes, subjects, userId }: Props) {
     const supabase = createClient()
 
     try {
+      const { data: userData } = await supabase.auth.getUser()
+
       const { error } = await supabase.from("questions").insert({
         subject_id: selectedSubject,
         question_text: questionText,
@@ -64,12 +65,12 @@ export function AddQuestionForm({ examTypes, subjects, userId }: Props) {
         option_d: optionD,
         correct_answer: correctAnswer,
         explanation: explanation || null,
-        created_by: userId,
+        created_by: userData?.user?.id,
       })
 
       if (error) throw error
 
-      router.push("/admin/questions")
+      router.push("/admin-secure-portal/questions")
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to add question")

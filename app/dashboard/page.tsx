@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { BookOpen, FileQuestion, LogOut, User } from "lucide-react"
+import { BookOpen, FileQuestion, LogOut, User, Users } from "lucide-react"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -64,7 +64,7 @@ export default async function DashboardPage() {
                 </CardHeader>
                 <CardContent>
                   <Button asChild className="w-full">
-                    <Link href="/admin/questions">Go to Questions</Link>
+                    <Link href="/admin-secure-portal/questions">Go to Questions</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -73,13 +73,28 @@ export default async function DashboardPage() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <BookOpen className="h-5 w-5 text-purple-600" />
-                    Manage Subjects
+                    Manage Subjects & Exams
                   </CardTitle>
-                  <CardDescription>View and manage exam subjects</CardDescription>
+                  <CardDescription>Add exam types and manage subjects</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Button asChild variant="outline" className="w-full bg-transparent">
-                    <Link href="/admin/subjects">View Subjects</Link>
+                    <Link href="/admin-secure-portal/subjects">Manage Subjects</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5 text-green-600" />
+                    User Management
+                  </CardTitle>
+                  <CardDescription>View and manage all registered users</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button asChild variant="outline" className="w-full bg-transparent">
+                    <Link href="/admin-secure-portal/users">View Users</Link>
                   </Button>
                 </CardContent>
               </Card>

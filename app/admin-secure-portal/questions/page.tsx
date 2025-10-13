@@ -13,7 +13,6 @@ export default async function AdminQuestionsPage() {
     redirect("/auth/login")
   }
 
-  // Check if user is admin
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", data.user.id).single()
 
   if (profile?.role !== "admin") {
@@ -48,7 +47,7 @@ export default async function AdminQuestionsPage() {
               <p className="text-muted-foreground">Add and manage exam questions</p>
             </div>
             <Button asChild>
-              <Link href="/admin/questions/add">
+              <Link href="/admin-secure-portal/questions/add">
                 <Plus className="h-4 w-4 mr-2" />
                 Add Question
               </Link>

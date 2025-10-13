@@ -5,7 +5,7 @@ import { ExamInterface } from "@/components/student/exam-interface"
 export default async function ExamPage({
   searchParams,
 }: {
-  searchParams: Promise<{ examTypeId?: string; subjectId?: string; subjectName?: string }>
+  searchParams: Promise<{ examTypeId?: string; subjectIds?: string; subjectNames?: string }>
 }) {
   const supabase = await createClient()
   const params = await searchParams
@@ -15,28 +15,29 @@ export default async function ExamPage({
     redirect("/auth/login")
   }
 
-  if (!params.examTypeId || !params.subjectId) {
+  if (!params.examTypeId || !params.subjectIds) {
     redirect("/student/select-exam")
   }
 
-  // Fetch questions for the selected subject
+  const subjectIdArray = params.subjectIds.split(",")
+
+  // Fetch questions for all selected subjects
   const { data: questions } = await supabase
     .from("questions")
     .select("*")
-    .eq("subject_id", params.subjectId)
+    .in("subject_id", subjectIdArray)
     .order("created_at")
 
   if (!questions || questions.length === 0) {
     redirect("/student/select-exam")
   }
 
-  // Create exam session
   const { data: session, error: sessionError } = await supabase
     .from("exam_sessions")
     .insert({
       user_id: data.user.id,
       exam_type_id: params.examTypeId,
-      subject_id: params.subjectId,
+      subject_id: subjectIdArray[0], // Store first subject for compatibility
       duration_minutes: 60,
       total_questions: questions.length,
     })
@@ -51,7 +52,7 @@ export default async function ExamPage({
     <ExamInterface
       questions={questions}
       sessionId={session.id}
-      subjectName={params.subjectName || ""}
+      subjectName={params.subjectNames || ""}
       userId={data.user.id}
     />
   )
