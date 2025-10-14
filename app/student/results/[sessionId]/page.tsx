@@ -3,8 +3,9 @@ import { createClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Link from "next/link"
-import { ArrowLeft, CheckCircle2, XCircle, Trophy, Target, Clock } from "lucide-react"
+import { ArrowLeft, CheckCircle2, XCircle, Trophy, Target, Clock, BookOpen } from "lucide-react"
 
 export default async function ResultDetailPage({ params }: { params: Promise<{ sessionId: string }> }) {
   const supabase = await createClient()
@@ -20,8 +21,7 @@ export default async function ResultDetailPage({ params }: { params: Promise<{ s
     .from("exam_sessions")
     .select(`
       *,
-      exam_types (name),
-      subjects (name)
+      exam_types (name)
     `)
     .eq("id", sessionId)
     .eq("user_id", data.user.id)
@@ -31,16 +31,45 @@ export default async function ResultDetailPage({ params }: { params: Promise<{ s
     redirect("/student/results")
   }
 
-  // Fetch exam answers with questions
+  const { data: sessionSubjects } = await supabase
+    .from("exam_session_subjects")
+    .select(`
+      *,
+      subjects (id, name)
+    `)
+    .eq("exam_session_id", sessionId)
+
   const { data: answers } = await supabase
     .from("exam_answers")
     .select(`
       *,
-      questions (*)
+      questions (*, subjects (id, name))
     `)
     .eq("exam_session_id", sessionId)
     .order("answered_at")
 
+  const answersBySubject = answers?.reduce(
+    (acc: any, answer: any) => {
+      const subjectId = answer.questions.subjects.id
+      const subjectName = answer.questions.subjects.name
+      if (!acc[subjectId]) {
+        acc[subjectId] = {
+          id: subjectId,
+          name: subjectName,
+          answers: [],
+          correct: 0,
+          total: 0,
+        }
+      }
+      acc[subjectId].answers.push(answer)
+      acc[subjectId].total++
+      if (answer.is_correct) acc[subjectId].correct++
+      return acc
+    },
+    {} as Record<string, any>,
+  )
+
+  const subjectResults = Object.values(answersBySubject || {})
   const percentage = Math.round((session.score / session.total_questions) * 100)
   const isPassed = percentage >= 50
 
@@ -59,12 +88,18 @@ export default async function ResultDetailPage({ params }: { params: Promise<{ s
           <CardHeader>
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>
-                <CardTitle className="text-2xl mb-2">
-                  {session.exam_types.name} - {session.subjects.name}
-                </CardTitle>
+                <CardTitle className="text-2xl mb-2">{session.exam_types.name} Exam</CardTitle>
                 <p className="text-sm text-muted-foreground">
                   Completed on {new Date(session.completed_at).toLocaleString()}
                 </p>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {sessionSubjects?.map((ss: any) => (
+                    <Badge key={ss.id} variant="outline">
+                      <BookOpen className="h-3 w-3 mr-1" />
+                      {ss.subjects.name}
+                    </Badge>
+                  ))}
+                </div>
               </div>
               <Badge variant={isPassed ? "default" : "destructive"} className="text-lg px-4 py-2">
                 {isPassed ? "Passed" : "Failed"}
@@ -72,13 +107,13 @@ export default async function ResultDetailPage({ params }: { params: Promise<{ s
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-3 gap-6 mb-6">
               <div className="flex items-center gap-4">
                 <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
                   <Trophy className="h-6 w-6 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Score</p>
+                  <p className="text-sm text-muted-foreground">Overall Score</p>
                   <p className="text-2xl font-bold text-blue-900">
                     {session.score}/{session.total_questions}
                   </p>
@@ -105,131 +140,113 @@ export default async function ResultDetailPage({ params }: { params: Promise<{ s
                 </div>
               </div>
             </div>
+
+            <div className="border-t pt-4">
+              <h3 className="font-semibold mb-3">Performance by Subject</h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                {subjectResults.map((subject: any) => {
+                  const subjectPercentage = Math.round((subject.correct / subject.total) * 100)
+                  return (
+                    <div key={subject.id} className="p-4 bg-white rounded-lg border">
+                      <div className="flex justify-between items-center mb-2">
+                        <p className="font-medium">{subject.name}</p>
+                        <Badge variant={subjectPercentage >= 50 ? "default" : "destructive"}>
+                          {subjectPercentage}%
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {subject.correct} / {subject.total} correct
+                      </p>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
           </CardContent>
         </Card>
 
-        {/* Question Review */}
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-blue-900 mb-4">Question Review</h2>
-          <div className="space-y-4">
-            {answers?.map((answer: any, index: number) => {
-              const question = answer.questions
-              const isCorrect = answer.is_correct
+          <Tabs defaultValue={subjectResults[0]?.id} className="w-full">
+            <TabsList className="w-full justify-start overflow-x-auto flex-wrap h-auto">
+              {subjectResults.map((subject: any) => (
+                <TabsTrigger key={subject.id} value={subject.id} className="flex-shrink-0">
+                  {subject.name}
+                </TabsTrigger>
+              ))}
+            </TabsList>
 
-              return (
-                <Card key={answer.id} className={`border-2 ${isCorrect ? "border-green-200" : "border-red-200"}`}>
-                  <CardHeader>
-                    <div className="flex items-start justify-between gap-4">
-                      <CardTitle className="text-lg">Question {index + 1}</CardTitle>
-                      {isCorrect ? (
-                        <Badge className="bg-green-500">
-                          <CheckCircle2 className="h-4 w-4 mr-1" />
-                          Correct
-                        </Badge>
-                      ) : (
-                        <Badge variant="destructive">
-                          <XCircle className="h-4 w-4 mr-1" />
-                          Incorrect
-                        </Badge>
-                      )}
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-base leading-relaxed">{question.question_text}</p>
+            {subjectResults.map((subject: any) => (
+              <TabsContent key={subject.id} value={subject.id} className="space-y-4 mt-4">
+                {subject.answers.map((answer: any, index: number) => {
+                  const question = answer.questions
+                  const isCorrect = answer.is_correct
 
-                    <div className="space-y-2">
-                      <div
-                        className={`p-3 rounded-lg border-2 ${
-                          answer.selected_answer === "A"
-                            ? isCorrect
-                              ? "bg-green-50 border-green-300"
-                              : "bg-red-50 border-red-300"
-                            : question.correct_answer === "A"
-                              ? "bg-green-50 border-green-300"
-                              : "bg-muted border-transparent"
-                        }`}
-                      >
-                        <span className="font-semibold">A.</span> {question.option_a}
-                        {question.correct_answer === "A" && <Badge className="ml-2 bg-green-500">Correct Answer</Badge>}
-                        {answer.selected_answer === "A" && !isCorrect && (
-                          <Badge variant="destructive" className="ml-2">
-                            Your Answer
-                          </Badge>
+                  return (
+                    <Card key={answer.id} className={`border-2 ${isCorrect ? "border-green-200" : "border-red-200"}`}>
+                      <CardHeader>
+                        <div className="flex items-start justify-between gap-4">
+                          <CardTitle className="text-lg">Question {index + 1}</CardTitle>
+                          {isCorrect ? (
+                            <Badge className="bg-green-500">
+                              <CheckCircle2 className="h-4 w-4 mr-1" />
+                              Correct
+                            </Badge>
+                          ) : (
+                            <Badge variant="destructive">
+                              <XCircle className="h-4 w-4 mr-1" />
+                              Incorrect
+                            </Badge>
+                          )}
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <p className="text-base leading-relaxed">{question.question_text}</p>
+
+                        <div className="space-y-2">
+                          {["A", "B", "C", "D"].map((option) => {
+                            const optionText = question[`option_${option.toLowerCase()}`]
+                            const isSelected = answer.selected_answer === option
+                            const isCorrectAnswer = question.correct_answer === option
+
+                            return (
+                              <div
+                                key={option}
+                                className={`p-3 rounded-lg border-2 ${
+                                  isSelected
+                                    ? isCorrect
+                                      ? "bg-green-50 border-green-300"
+                                      : "bg-red-50 border-red-300"
+                                    : isCorrectAnswer
+                                      ? "bg-green-50 border-green-300"
+                                      : "bg-muted border-transparent"
+                                }`}
+                              >
+                                <span className="font-semibold">{option}.</span> {optionText}
+                                {isCorrectAnswer && <Badge className="ml-2 bg-green-500">Correct Answer</Badge>}
+                                {isSelected && !isCorrect && (
+                                  <Badge variant="destructive" className="ml-2">
+                                    Your Answer
+                                  </Badge>
+                                )}
+                              </div>
+                            )
+                          })}
+                        </div>
+
+                        {question.explanation && (
+                          <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                            <p className="text-sm font-semibold text-blue-900 mb-1">Explanation:</p>
+                            <p className="text-sm text-blue-800">{question.explanation}</p>
+                          </div>
                         )}
-                      </div>
-
-                      <div
-                        className={`p-3 rounded-lg border-2 ${
-                          answer.selected_answer === "B"
-                            ? isCorrect
-                              ? "bg-green-50 border-green-300"
-                              : "bg-red-50 border-red-300"
-                            : question.correct_answer === "B"
-                              ? "bg-green-50 border-green-300"
-                              : "bg-muted border-transparent"
-                        }`}
-                      >
-                        <span className="font-semibold">B.</span> {question.option_b}
-                        {question.correct_answer === "B" && <Badge className="ml-2 bg-green-500">Correct Answer</Badge>}
-                        {answer.selected_answer === "B" && !isCorrect && (
-                          <Badge variant="destructive" className="ml-2">
-                            Your Answer
-                          </Badge>
-                        )}
-                      </div>
-
-                      <div
-                        className={`p-3 rounded-lg border-2 ${
-                          answer.selected_answer === "C"
-                            ? isCorrect
-                              ? "bg-green-50 border-green-300"
-                              : "bg-red-50 border-red-300"
-                            : question.correct_answer === "C"
-                              ? "bg-green-50 border-green-300"
-                              : "bg-muted border-transparent"
-                        }`}
-                      >
-                        <span className="font-semibold">C.</span> {question.option_c}
-                        {question.correct_answer === "C" && <Badge className="ml-2 bg-green-500">Correct Answer</Badge>}
-                        {answer.selected_answer === "C" && !isCorrect && (
-                          <Badge variant="destructive" className="ml-2">
-                            Your Answer
-                          </Badge>
-                        )}
-                      </div>
-
-                      <div
-                        className={`p-3 rounded-lg border-2 ${
-                          answer.selected_answer === "D"
-                            ? isCorrect
-                              ? "bg-green-50 border-green-300"
-                              : "bg-red-50 border-red-300"
-                            : question.correct_answer === "D"
-                              ? "bg-green-50 border-green-300"
-                              : "bg-muted border-transparent"
-                        }`}
-                      >
-                        <span className="font-semibold">D.</span> {question.option_d}
-                        {question.correct_answer === "D" && <Badge className="ml-2 bg-green-500">Correct Answer</Badge>}
-                        {answer.selected_answer === "D" && !isCorrect && (
-                          <Badge variant="destructive" className="ml-2">
-                            Your Answer
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-
-                    {question.explanation && (
-                      <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                        <p className="text-sm font-semibold text-blue-900 mb-1">Explanation:</p>
-                        <p className="text-sm text-blue-800">{question.explanation}</p>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              )
-            })}
-          </div>
+                      </CardContent>
+                    </Card>
+                  )
+                })}
+              </TabsContent>
+            ))}
+          </Tabs>
         </div>
 
         {/* Action Buttons */}

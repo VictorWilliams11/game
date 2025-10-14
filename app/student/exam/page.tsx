@@ -70,5 +70,14 @@ export default async function ExamPage({
     redirect("/student/select-exam")
   }
 
+  const subjectInserts = subjectsWithQuestions.map((subject) => ({
+    exam_session_id: session.id,
+    subject_id: subject.id,
+    questions_count: subject.questions.length,
+    correct_answers: 0,
+  }))
+
+  await supabase.from("exam_session_subjects").insert(subjectInserts)
+
   return <ExamInterface subjectsWithQuestions={subjectsWithQuestions} sessionId={session.id} userId={data.user.id} />
 }
