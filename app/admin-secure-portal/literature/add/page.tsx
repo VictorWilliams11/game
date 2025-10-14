@@ -31,6 +31,7 @@ export default function AddLiteraturePage() {
     author: "",
     description: "",
     content: "",
+    pdfUrl: "",
   })
 
   useEffect(() => {
@@ -66,7 +67,8 @@ export default function AddLiteraturePage() {
         title: formData.title,
         author: formData.author || null,
         description: formData.description || null,
-        content: formData.content,
+        content: formData.content || null,
+        pdf_url: formData.pdfUrl || null,
         exam_type_id: selectedExamType,
         subject_id: selectedSubject || null,
         created_by: userData.user.id,
@@ -96,7 +98,7 @@ export default function AddLiteraturePage() {
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl">Add New Literature</CardTitle>
-            <CardDescription>Add novels and literature materials for students</CardDescription>
+            <CardDescription>Add novels and literature materials (PDF or text) for students</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -165,16 +167,30 @@ export default function AddLiteraturePage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="content">Content *</Label>
+                <Label htmlFor="pdfUrl">PDF URL (Recommended for novels)</Label>
+                <Input
+                  id="pdfUrl"
+                  type="url"
+                  value={formData.pdfUrl}
+                  onChange={(e) => setFormData({ ...formData, pdfUrl: e.target.value })}
+                  placeholder="https://example.com/novel.pdf"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Upload your PDF to Google Drive, Dropbox, or any hosting service and paste the direct link here
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="content">Text Content (Optional if PDF is provided)</Label>
                 <Textarea
                   id="content"
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  placeholder="Full text of the literature..."
+                  placeholder="Full text of the literature (optional if PDF URL is provided)..."
                   rows={15}
-                  required
                   className="font-mono text-sm"
                 />
+                <p className="text-xs text-muted-foreground">Provide either PDF URL or text content (or both)</p>
               </div>
 
               {error && <p className="text-sm text-destructive">{error}</p>}

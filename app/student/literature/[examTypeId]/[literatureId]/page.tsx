@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-import { ArrowLeft, User, BookOpen } from "lucide-react"
+import { ArrowLeft, User, BookOpen, Download, FileText } from "lucide-react"
 
 export default async function LiteratureReadPage({
   params,
@@ -66,9 +66,38 @@ export default async function LiteratureReadPage({
             {literature.description && <p className="text-muted-foreground">{literature.description}</p>}
           </CardHeader>
           <CardContent>
-            <div className="prose prose-blue max-w-none">
-              <div className="whitespace-pre-wrap text-base leading-relaxed">{literature.content}</div>
-            </div>
+            {literature.pdf_url && (
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-blue-600" />
+                    <span className="font-medium text-blue-900">PDF Document Available</span>
+                  </div>
+                  <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700">
+                    <a href={literature.pdf_url} target="_blank" rel="noopener noreferrer">
+                      <Download className="h-4 w-4 mr-2" />
+                      Download PDF
+                    </a>
+                  </Button>
+                </div>
+
+                {/* PDF Viewer */}
+                <div className="w-full h-[600px] border rounded-lg overflow-hidden bg-gray-100">
+                  <iframe src={`${literature.pdf_url}#toolbar=1`} className="w-full h-full" title={literature.title} />
+                </div>
+              </div>
+            )}
+
+            {literature.content && (
+              <div className="prose prose-blue max-w-none">
+                {literature.pdf_url && <h3 className="text-lg font-semibold mb-3 mt-6">Additional Text Content</h3>}
+                <div className="whitespace-pre-wrap text-base leading-relaxed">{literature.content}</div>
+              </div>
+            )}
+
+            {!literature.pdf_url && !literature.content && (
+              <p className="text-center text-muted-foreground py-8">No content available for this literature.</p>
+            )}
           </CardContent>
         </Card>
       </div>

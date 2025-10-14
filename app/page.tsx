@@ -31,7 +31,7 @@ export default async function HomePage() {
           <div className="flex flex-wrap justify-center gap-6 mb-8">
             <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md">
               <FileQuestion className="h-5 w-5 text-blue-600" />
-              <span className="font-bold text-blue-900">{questionsCount || 1000}+</span>
+              <span className="font-bold text-blue-900">{questionsCount || 2000}+</span>
               <span className="text-muted-foreground">Questions</span>
             </div>
             <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md">
@@ -57,7 +57,7 @@ export default async function HomePage() {
         </div>
 
         {/* Features Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div id="features" className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           <Card className="border-2 hover:border-blue-300 transition-colors">
             <CardContent className="pt-6">
               <div className="flex flex-col items-center text-center">
@@ -107,7 +107,7 @@ export default async function HomePage() {
           </Card>
         </div>
 
-        <div className="mb-16 max-w-3xl mx-auto">
+        <div id="leaderboard" className="mb-16 max-w-3xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-blue-900 mb-3">Top Performers This Month</h2>
             <p className="text-muted-foreground">
@@ -117,7 +117,7 @@ export default async function HomePage() {
           <Leaderboard limit={5} />
         </div>
 
-        <div className="mb-16 bg-white rounded-2xl p-8 shadow-lg">
+        <div id="about" className="mb-16 bg-white rounded-2xl p-8 shadow-lg">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-blue-900 mb-3">Why Choose CampusGist CBT?</h2>
             <p className="text-muted-foreground">
