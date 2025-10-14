@@ -46,12 +46,20 @@ export default async function AdminQuestionsPage() {
               <h1 className="text-3xl font-bold text-blue-900">Manage Questions</h1>
               <p className="text-muted-foreground">Add and manage exam questions</p>
             </div>
-            <Button asChild>
-              <Link href="/admin-secure-portal/questions/add">
-                <Plus className="h-4 w-4 mr-2" />
-                Add Question
-              </Link>
-            </Button>
+            <div className="flex gap-2">
+              <Button asChild variant="outline">
+                <Link href="/admin-secure-portal/questions/add-bulk">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Multiple
+                </Link>
+              </Button>
+              <Button asChild>
+                <Link href="/admin-secure-portal/questions/add">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Question
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
 
