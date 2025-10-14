@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { BookOpen, FileQuestion, LogOut, User, Users } from "lucide-react"
+import { BookOpen, FileQuestion, LogOut, User, Users, Library } from "lucide-react"
 import { Leaderboard } from "@/components/leaderboard"
 
 export default async function DashboardPage() {
@@ -14,7 +14,6 @@ export default async function DashboardPage() {
     redirect("/auth/login")
   }
 
-  // Get user profile to check role
   const { data: profile } = await supabase.from("profiles").select("*").eq("id", data.user.id).single()
 
   const isAdmin = profile?.role === "admin"
@@ -29,7 +28,6 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-blue-900">Dashboard</h1>
@@ -43,7 +41,6 @@ export default async function DashboardPage() {
           </form>
         </div>
 
-        {/* Role Badge */}
         <div className="mb-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">
             <User className="h-4 w-4" />
@@ -51,7 +48,6 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Dashboard Cards */}
         <div className="grid md:grid-cols-2 gap-6">
           {isAdmin ? (
             <>
@@ -114,6 +110,21 @@ export default async function DashboardPage() {
                   </Button>
                 </CardContent>
               </Card>
+
+              <Card className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Library className="h-5 w-5 text-orange-600" />
+                    Manage Literature
+                  </CardTitle>
+                  <CardDescription>Add and manage novels and literature materials</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button asChild variant="outline" className="w-full bg-transparent">
+                    <Link href="/admin-secure-portal/literature">Manage Literature</Link>
+                  </Button>
+                </CardContent>
+              </Card>
             </>
           ) : (
             <>
@@ -153,7 +164,7 @@ export default async function DashboardPage() {
                     <BookOpen className="h-5 w-5 text-indigo-600" />
                     Study Notes
                   </CardTitle>
-                  <CardDescription>Read notes and literature for your exams</CardDescription>
+                  <CardDescription>Read notes and study materials for your exams</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Button asChild variant="outline" className="w-full bg-transparent">
@@ -161,11 +172,25 @@ export default async function DashboardPage() {
                   </Button>
                 </CardContent>
               </Card>
+
+              <Card className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Library className="h-5 w-5 text-orange-600" />
+                    Literature & Novels
+                  </CardTitle>
+                  <CardDescription>Browse and read literature materials</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button asChild variant="outline" className="w-full bg-transparent">
+                    <Link href="/student/literature">Browse Literature</Link>
+                  </Button>
+                </CardContent>
+              </Card>
             </>
           )}
         </div>
 
-        {/* Leaderboard for students */}
         {!isAdmin && (
           <div className="mt-8">
             <Leaderboard limit={10} />
