@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Menu, X, LogOut } from "lucide-react"
+import { Menu, X } from "lucide-react"
 import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
@@ -72,28 +72,7 @@ export function SiteHeader() {
           </Link>
         </nav>
 
-        <div className="hidden md:flex items-center gap-3">
-          {!isLoading && user ? (
-            <Button
-              onClick={handleLogout}
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-2 bg-transparent"
-            >
-              <LogOut className="h-4 w-4" />
-              Logout
-            </Button>
-          ) : (
-            <>
-              <Button asChild variant="ghost" size="sm">
-                <Link href="/auth/login">Login</Link>
-              </Button>
-              <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700">
-                <Link href="/auth/sign-up">Sign Up</Link>
-              </Button>
-            </>
-          )}
-        </div>
+        <div className="hidden md:flex items-center gap-3"></div>
 
         {/* Mobile Menu Button */}
         <Button variant="ghost" size="sm" className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
@@ -142,36 +121,6 @@ export function SiteHeader() {
             >
               Back to CampusGist.com.ng
             </Link>
-            <div className="flex flex-col gap-2 pt-2 border-t">
-              {!isLoading && user ? (
-                <Button
-                  onClick={() => {
-                    handleLogout()
-                    setMobileMenuOpen(false)
-                  }}
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center gap-2 justify-center"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Logout
-                </Button>
-              ) : (
-                <>
-                  <Button asChild variant="outline" size="sm" onClick={() => setMobileMenuOpen(false)}>
-                    <Link href="/auth/login">Login</Link>
-                  </Button>
-                  <Button
-                    asChild
-                    size="sm"
-                    className="bg-blue-600 hover:bg-blue-700"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <Link href="/auth/sign-up">Sign Up</Link>
-                  </Button>
-                </>
-              )}
-            </div>
           </nav>
         </div>
       )}
