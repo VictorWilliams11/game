@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import Image from "next/image"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -43,6 +44,9 @@ export default function LoginPage() {
     <div className="flex min-h-screen w-full items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
+          <div className="flex justify-center mb-4">
+            <Image src="/logo.png" alt="Campus Gist CBT" width={80} height={80} className="h-20 w-20" />
+          </div>
           <h1 className="text-4xl font-bold text-blue-900 mb-2">CBT Practice</h1>
           <p className="text-muted-foreground">Prepare for JAMB, WAEC & NECO</p>
         </div>

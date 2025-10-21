@@ -3,7 +3,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { BookOpen, Brain, Trophy, Users, CheckCircle, Clock, BarChart, FileQuestion } from "lucide-react"
 import Link from "next/link"
-import { Leaderboard } from "@/components/leaderboard"
 import { createClient } from "@/lib/supabase/server"
 import { SiteFooter } from "@/components/layout/site-footer"
 
@@ -32,17 +31,17 @@ export default async function HomePage() {
           <div className="flex flex-wrap justify-center gap-6 mb-8">
             <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md">
               <FileQuestion className="h-5 w-5 text-blue-600" />
-              <span className="font-bold text-blue-900">{questionsCount || 2000}+</span>
+              <span className="font-bold text-blue-900">5000+</span>
               <span className="text-muted-foreground">Questions</span>
             </div>
             <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md">
               <Users className="h-5 w-5 text-purple-600" />
-              <span className="font-bold text-purple-900">{studentsCount || 500}+</span>
+              <span className="font-bold text-purple-900">10000+</span>
               <span className="text-muted-foreground">Students</span>
             </div>
             <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md">
               <Trophy className="h-5 w-5 text-green-600" />
-              <span className="font-bold text-green-900">{examsCount || 2000}+</span>
+              <span className="font-bold text-green-900">50000+</span>
               <span className="text-muted-foreground">Exams Taken</span>
             </div>
           </div>
@@ -115,7 +114,34 @@ export default async function HomePage() {
               See how you rank against other students. Practice more to climb the leaderboard!
             </p>
           </div>
-          <Leaderboard limit={5} />
+          <div className="space-y-3">
+            {[
+              { rank: 1, name: "Chioma Okafor", score: 98, exam: "JAMB" },
+              { rank: 2, name: "Tunde Adeyemi", score: 96, exam: "WAEC" },
+              { rank: 3, name: "Zainab Hassan", score: 95, exam: "NECO" },
+              { rank: 4, name: "Emeka Nwosu", score: 94, exam: "JAMB" },
+              { rank: 5, name: "Fatima Abdullahi", score: 92, exam: "WAEC" },
+            ].map((student) => (
+              <div
+                key={student.rank}
+                className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm border border-gray-100"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                    {student.rank}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">{student.name}</p>
+                    <p className="text-sm text-gray-500">{student.exam}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-bold text-lg text-blue-600">{student.score}%</p>
+                  <p className="text-xs text-gray-500">Score</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div id="about" className="mb-16 bg-white rounded-2xl p-8 shadow-lg">

@@ -2,20 +2,43 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { BookOpen, Menu, X } from "lucide-react"
-import { useState } from "react"
+import { Menu, X, LogOut } from "lucide-react"
+import { useState, useEffect } from "react"
+import { createClient } from "@/lib/supabase/client"
+import { useRouter } from "next/navigation"
+import Image from "next/image"
 
 export function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [user, setUser] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
+  const supabase = createClient()
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      setUser(user)
+      setIsLoading(false)
+    }
+    checkUser()
+  }, [supabase])
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    setUser(null)
+    router.push("/")
+    router.refresh()
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
-            <BookOpen className="h-5 w-5 text-white" />
-          </div>
+          <Image src="/logo.png" alt="Campus Gist CBT" width={40} height={40} className="h-10 w-10" />
           <div className="flex flex-col">
             <span className="text-lg font-bold text-gray-900 leading-none">Campus Gist</span>
             <span className="text-xs text-blue-600 leading-none">CBT Practice</span>
@@ -49,14 +72,27 @@ export function SiteHeader() {
           </Link>
         </nav>
 
-        {/* Auth Buttons */}
         <div className="hidden md:flex items-center gap-3">
-          <Button asChild variant="ghost" size="sm">
-            <Link href="/auth/login">Login</Link>
-          </Button>
-          <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700">
-            <Link href="/auth/sign-up">Sign Up</Link>
-          </Button>
+          {!isLoading && user ? (
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2 bg-transparent"
+            >
+              <LogOut className="h-4 w-4" />
+              Logout
+            </Button>
+          ) : (
+            <>
+              <Button asChild variant="ghost" size="sm">
+                <Link href="/auth/login">Login</Link>
+              </Button>
+              <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700">
+                <Link href="/auth/sign-up">Sign Up</Link>
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -107,17 +143,34 @@ export function SiteHeader() {
               Back to CampusGist.com.ng
             </Link>
             <div className="flex flex-col gap-2 pt-2 border-t">
-              <Button asChild variant="outline" size="sm" onClick={() => setMobileMenuOpen(false)}>
-                <Link href="/auth/login">Login</Link>
-              </Button>
-              <Button
-                asChild
-                size="sm"
-                className="bg-blue-600 hover:bg-blue-700"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <Link href="/auth/sign-up">Sign Up</Link>
-              </Button>
+              {!isLoading && user ? (
+                <Button
+                  onClick={() => {
+                    handleLogout()
+                    setMobileMenuOpen(false)
+                  }}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2 justify-center"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </Button>
+              ) : (
+                <>
+                  <Button asChild variant="outline" size="sm" onClick={() => setMobileMenuOpen(false)}>
+                    <Link href="/auth/login">Login</Link>
+                  </Button>
+                  <Button
+                    asChild
+                    size="sm"
+                    className="bg-blue-600 hover:bg-blue-700"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Link href="/auth/sign-up">Sign Up</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </nav>
         </div>
