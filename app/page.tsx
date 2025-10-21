@@ -5,6 +5,7 @@ import { BookOpen, Brain, Trophy, Users, CheckCircle, Clock, BarChart, FileQuest
 import Link from "next/link"
 import { Leaderboard } from "@/components/leaderboard"
 import { createClient } from "@/lib/supabase/server"
+import { SiteFooter } from "@/components/layout/site-footer"
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -193,6 +194,7 @@ export default async function HomePage() {
           </Button>
         </div>
       </div>
+      <SiteFooter />
     </div>
   )
 }

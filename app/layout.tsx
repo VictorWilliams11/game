@@ -5,7 +5,6 @@ import { GeistMono } from "geist/font/mono"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import { SiteHeader } from "@/components/layout/site-header"
-import { SiteFooter } from "@/components/layout/site-footer"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -26,7 +25,6 @@ export default function RootLayout({
         <main className="flex-1">
           <Suspense fallback={null}>{children}</Suspense>
         </main>
-        <SiteFooter />
         <Analytics />
       </body>
     </html>
