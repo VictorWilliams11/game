@@ -30,19 +30,30 @@ type Props = {
 export function QuestionsList({ questions }: Props) {
   const router = useRouter()
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this question?")) return
 
     setDeletingId(id)
+    setError(null)
     const supabase = createClient()
 
     try {
-      const { error } = await supabase.from("questions").delete().eq("id", id)
-      if (error) throw error
+      const { error: deleteError } = await supabase.from("questions").delete().eq("id", id)
+
+      if (deleteError) {
+        console.error("[v0] Delete error:", deleteError)
+        throw new Error(deleteError.message || "Failed to delete question")
+      }
+
+      console.log("[v0] Question deleted successfully:", id)
       router.refresh()
     } catch (err) {
-      alert("Failed to delete question")
+      const errorMessage = err instanceof Error ? err.message : "Failed to delete question"
+      console.error("[v0] Delete failed:", errorMessage)
+      setError(errorMessage)
+      alert(errorMessage)
     } finally {
       setDeletingId(null)
     }
@@ -60,6 +71,13 @@ export function QuestionsList({ questions }: Props) {
 
   return (
     <div className="space-y-4">
+      {error && (
+        <Card className="border-red-200 bg-red-50">
+          <CardContent className="pt-6">
+            <p className="text-red-700 text-sm">{error}</p>
+          </CardContent>
+        </Card>
+      )}
       {questions.map((question) => (
         <Card key={question.id}>
           <CardHeader>

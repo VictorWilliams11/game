@@ -99,21 +99,6 @@ export default async function DashboardPage() {
               <Card className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <BookOpen className="h-5 w-5 text-indigo-600" />
-                    Manage Study Notes
-                  </CardTitle>
-                  <CardDescription>Add and manage study materials for students</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button asChild variant="outline" className="w-full bg-transparent">
-                    <Link href="/admin-secure-portal/notes">Manage Notes</Link>
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
                     <Library className="h-5 w-5 text-orange-600" />
                     Manage Literature
                   </CardTitle>
@@ -154,21 +139,6 @@ export default async function DashboardPage() {
                 <CardContent>
                   <Button asChild variant="outline" className="w-full bg-transparent">
                     <Link href="/student/results">View Results</Link>
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <BookOpen className="h-5 w-5 text-indigo-600" />
-                    Study Notes
-                  </CardTitle>
-                  <CardDescription>Read notes and study materials for your exams</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button asChild variant="outline" className="w-full bg-transparent">
-                    <Link href="/student/notes">View Study Materials</Link>
                   </Button>
                 </CardContent>
               </Card>
