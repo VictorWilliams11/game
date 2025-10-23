@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   title: "CBT Practice - CampusGist",
   description: "Practice for Nigerian exams (JAMB, WAEC, NECO) with our comprehensive CBT platform",
   generator: "v0.app",
+  icons: {
+    icon: "/favicon.png",
+  },
 }
 
 export default function RootLayout({
@@ -20,6 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/favicon.png" type="image/png" />
+      </head>
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable} flex min-h-screen flex-col`}>
         <SiteHeader />
         <main className="flex-1">
