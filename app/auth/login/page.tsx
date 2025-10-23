@@ -45,7 +45,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <div className="flex justify-center mb-4">
-            <Image src="/logo.png" alt="Campus Gist CBT" width={80} height={80} className="h-20 w-20" />
+            <Image src="/logo.png" alt="Campus Gist CBT" width={80} height={80} className="h-20 w-20 rounded-lg" />
           </div>
           <h1 className="text-4xl font-bold text-blue-900 mb-2">CBT Practice</h1>
           <p className="text-muted-foreground">Prepare for JAMB, WAEC & NECO</p>

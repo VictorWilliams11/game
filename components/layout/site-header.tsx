@@ -38,7 +38,7 @@ export function SiteHeader() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <Image src="/logo.png" alt="Campus Gist CBT" width={40} height={40} className="h-10 w-10" />
+          <Image src="/logo.png" alt="Campus Gist CBT" width={40} height={40} className="h-10 w-10 rounded-lg" />
           <div className="flex flex-col">
             <span className="text-lg font-bold text-gray-900 leading-none">Campus Gist</span>
             <span className="text-xs text-blue-600 leading-none">CBT Practice</span>
