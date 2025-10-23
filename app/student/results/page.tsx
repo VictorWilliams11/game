@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { ArrowLeft, Calendar, Clock, Trophy } from "lucide-react"
-import { DeleteResultButton } from "@/components/student/delete-result-button"
 
 export default async function ResultsListPage() {
   const supabase = await createClient()
@@ -88,12 +87,9 @@ export default async function ResultsListPage() {
                             {percentage}%
                           </Badge>
                         </div>
-                        <div className="flex gap-2">
-                          <Button asChild>
-                            <Link href={`/student/results/${session.id}`}>View Details</Link>
-                          </Button>
-                          <DeleteResultButton sessionId={session.id} />
-                        </div>
+                        <Button asChild>
+                          <Link href={`/student/results/${session.id}`}>View Details</Link>
+                        </Button>
                       </div>
                     </div>
                   </CardHeader>

@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Link from "next/link"
 import { ArrowLeft, CheckCircle2, XCircle, Trophy, Target, Clock, BookOpen } from "lucide-react"
-import { ResetResultButton } from "@/components/student/reset-result-button"
 
 export default async function ResultDetailPage({ params }: { params: Promise<{ sessionId: string }> }) {
   const supabase = await createClient()
@@ -255,7 +254,6 @@ export default async function ResultDetailPage({ params }: { params: Promise<{ s
           <Button asChild className="flex-1">
             <Link href="/student/select-exam">Take Another Exam</Link>
           </Button>
-          <ResetResultButton sessionId={sessionId} />
           <Button asChild variant="outline" className="flex-1 bg-transparent">
             <Link href="/dashboard">Back to Dashboard</Link>
           </Button>
