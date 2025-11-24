@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://cbt-campusgist.com.ng"
+  const baseUrl = "https://cbt.campusgist.com.ng"
 
   return [
     // Public pages

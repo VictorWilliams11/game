@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/admin-secure-portal/", "/student/", "/auth/"],
     },
-    sitemap: "https://cbt-campusgist.com.ng/sitemap.xml",
+    sitemap: "https://cbt.campusgist.com.ng/sitemap.xml",
   }
 }
