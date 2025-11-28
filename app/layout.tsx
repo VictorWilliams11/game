@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.png",
   },
+  verification: {
+    google: "86IUZxDHnbYnlYnhdkeeWUZv5FLYkFBE5d_JySx8SCc",
+  },
 }
 
 export default function RootLayout({
