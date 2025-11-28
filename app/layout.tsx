@@ -8,14 +8,23 @@ import { SiteHeader } from "@/components/layout/site-header"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "CBT Practice - CampusGist",
-  description: "Practice for Nigerian exams (JAMB, WAEC, NECO) with our comprehensive CBT platform",
+  title: "CampusGist CBT - Nigerian Exam Practice Platform (JAMB, WAEC, NECO)",
+  description:
+    "Master Nigerian entrance exams with CampusGist CBT. Practice 2000+ questions, access study materials, and track your progress. Ideal for JAMB, WAEC, and NECO exam preparation.",
+  keywords:
+    "CBT practice, JAMB exam, WAEC exam, NECO exam, Nigerian exams, online exam practice, entrance exam preparation",
   generator: "v0.app",
   icons: {
     icon: "/favicon.png",
   },
   verification: {
     google: "86IUZxDHnbYnlYnhdkeeWUZv5FLYkFBE5d_JySx8SCc",
+  },
+  openGraph: {
+    title: "CampusGist CBT - Nigerian Exam Practice Platform",
+    description: "Master Nigerian entrance exams with 2000+ practice questions and comprehensive study materials",
+    url: "https://cbt.campusgist.com.ng",
+    type: "website",
   },
 }
 
